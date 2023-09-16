@@ -6,12 +6,21 @@ import { Container, Row, Col, Card, Button, ProgressBar } from 'react-bootstrap'
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
 
+const stats = [
+    "hp",
+    "attack",
+    "defense",
+    "special_attack",
+    "special_defense",
+    "speed"
+]
+
 const variants = {
     "hp": "success",
     "attack": "danger",
     "defense": "warning",
-    "special-attack": "info",
-    "special-defense": "warning",
+    "special_attack": "info",
+    "special_defense": "warning",
     "speed": ""
 }
 
@@ -28,24 +37,24 @@ export default function DisplayPoki() {
                 <Card style={{ width: '18rem', margin: 20, alignItems: "center" }}>
                     <Image style={{ margin: 20 }} priority src={require("../public/sprites/" + poki.id + ".svg")} width={200} height={200} alt="..." />
                     <Card.Body style={{ width: "100%" }}>
-                        <Card.Title>{poki.name.charAt(0).toUpperCase() + poki.name.slice(1)}</Card.Title>
+                        <Card.Title>{poki.name}</Card.Title>
                         <Card.Text>
-                            Type: {poki.types?.map(({ type }) => type.name).join(", ")}
+                            Type: {poki.type}
                         </Card.Text>
                         <Card.Text>
-                            {poki.stats.map(currentstat => {
-                                const statName = currentstat.stat.name?.replace("-", " ")
+                            {stats.map(statIndex => {
+                                const statName = statIndex?.replace("_", " ")
                                 const StatDisplayName = statName.charAt(0).toUpperCase() + statName.slice(1)
+                                const statValue = poki[statIndex]
                                 return (
                                     <div>
                                         <div>
-                                            {StatDisplayName}: {currentstat.base_stat}
+                                            {StatDisplayName}: {statValue}
                                         </div>
-                                        <ProgressBar variant={variants[currentstat.stat.name]} animated={currentstat.base_stat >= 100} now={currentstat.base_stat} />
+                                        <ProgressBar variant={variants[statIndex]} animated={statValue >= 100} now={statValue} />
                                     </div>
                                 )
-                            }
-                            )}
+                            })}
                         </Card.Text>
                     </Card.Body>
                 </Card>
