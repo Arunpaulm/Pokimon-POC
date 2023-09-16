@@ -6,7 +6,7 @@ export default function Index() {
   return (
     <>
       <MyNavbar />
-      <Container>
+      <Container key="maincontainer">
         <div style={{ margin: 20 }}></div>
 
         <DisplayPoki></DisplayPoki>
