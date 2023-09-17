@@ -5,7 +5,6 @@ import Image from 'next/image';
 import {
     Row, Col,
     Card,
-    Button,
     ProgressBar,
     Form,
     InputGroup,
@@ -41,7 +40,7 @@ export default function DisplayPoki() {
     // if (!data) return null
 
     const [data, setData] = useState(null)
-    const [pokimon, setPokimon] = useState([])
+    const [pokimon, setPokimon] = useState([{}])
     const [isLoading, setLoading] = useState(true)
     const [searchKeyword, setSearchKeyword] = useState("")
     const [selectedSort, setSelectedSort] = useState("default")
@@ -58,9 +57,12 @@ export default function DisplayPoki() {
     }, [])
 
     useEffect(() => {
-        console.log("selectedSort - ", selectedSort)
-        console.log("selectedOrder - ", selectedOrder)
+        if (searchKeyword.length === 0) {
+            setPokimon(data)
+        }
+    }, [searchKeyword])
 
+    useEffect(() => {
         const ascendingOrderFunction = (v1, v2) => v1[selectedSort] - v2[selectedSort]
         const ascendingNameOrderFunction = (v1, v2) => v1.name.localeCompare(v2.name)
         const descendingOrderFunction = (v1, v2) => v2[selectedSort] - v1[selectedSort]
@@ -116,10 +118,10 @@ export default function DisplayPoki() {
     return (
         <Row className="md-12" style={{ backgroundColor: "lightgrey", borderRadius: 25, justifyContent: "center", alignItems: "center" }}>
             <Row style={{ marginTop: 10, justifyContent: "center", alignItems: "center" }}>
-                <Col md={8}>
+                <Col md={7}>
                     <Form style={{ margin: 20 }} noValidate validated={validated} onSubmit={handleSubmit}>
                         <Form.Group as={Col} md="4" controlId="validationCustomSearchKeyword">
-                            <InputGroup hasValidation style={{ width: "50vw" }}>
+                            <InputGroup hasValidation style={{ width: "45vw" }}>
                                 <InputGroup.Text id="inputGroupPrepend">Search</InputGroup.Text>
                                 <Form.Control
                                     type="text"
@@ -130,11 +132,6 @@ export default function DisplayPoki() {
                                     onChange={(event) => {
                                         setSearchKeyword(event.target.value)
                                     }}
-                                    onKeyDown={(event) => {
-                                        if (event.keyCode === 8 && searchKeyword.length === 1) {
-                                            setPokimon(data)
-                                        }
-                                    }}
                                 />
                                 <Form.Control.Feedback type="invalid">
                                     Enter keyword to search.
@@ -143,7 +140,7 @@ export default function DisplayPoki() {
                         </Form.Group>
                     </Form>
                 </Col>
-                <Col md={2}>
+                <Col md={3}>
                     <Dropdown style={{ alignSelf: "flex-end" }}>
                         <Dropdown.Toggle variant="success" id="dropdown-basic">
                             Sort By ({selectedSort})
@@ -155,7 +152,7 @@ export default function DisplayPoki() {
                     </Dropdown>
                 </Col>
                 <Col md={1}>
-                    <Form.Check // prettier-ignore
+                    <Form.Check
                         type={"checkbox"}
                         id={"sort-checkbox"}
                         label={"Ascending"}
@@ -167,20 +164,20 @@ export default function DisplayPoki() {
 
             <Row className="md-12" style={{ padding: 0, margin: 0, justifyContent: "center", alignItems: "center" }}>
                 {pokimon?.map(poki => (
-                    <Card key={"poki" + poki.id + "card"} style={{ width: '18rem', margin: 20, alignItems: "center" }}>
-                        <Image key={"poki" + poki.id + "image"} style={{ margin: 20 }} priority src={require("../public/sprites/" + poki.id + ".svg")} width={200} height={200} alt="..." />
-                        <Card.Body key={"poki" + poki.id + "body"} style={{ width: "100%", paddingBottom: 30 }}>
-                            <Card.Title key={"poki" + poki.id + "title"}>{poki.name}</Card.Title>
-                            <Card.Text key={"poki" + poki.id + "type"}>
-                                Type: {poki.type}
+                    <Card key={"poki" + poki?.id + "card"} style={{ width: '18rem', margin: 20, alignItems: "center" }}>
+                        <Image key={"poki" + poki?.id + "image"} style={{ margin: 20 }} priority src={require("../public/sprites/" + poki.id + ".svg")} width={200} height={200} alt="..." />
+                        <Card.Body key={"poki" + poki?.id + "body"} style={{ width: "100%", paddingBottom: 30 }}>
+                            <Card.Title key={"poki" + poki?.id + "title"}>{poki?.name}</Card.Title>
+                            <Card.Text key={"poki" + poki?.id + "type"}>
+                                Type: {poki?.type}
                             </Card.Text>
                             {stats.map((statIndex, index) => {
                                 const statName = statIndex?.replace("_", " ")
                                 const StatDisplayName = statName.charAt(0).toUpperCase() + statName.slice(1)
                                 const statValue = poki[statIndex]
                                 return (
-                                    <div key={"poki" + poki.id + "stats" + index}>
-                                        <div key={"poki" + poki.id + "stat" + index}>
+                                    <div key={"poki" + poki?.id + "stats" + index}>
+                                        <div key={"poki" + poki?.id + "stat" + index}>
                                             {StatDisplayName}: {statValue}
                                         </div>
                                         <ProgressBar variant={variants[statIndex]} animated={statValue >= 100} now={statValue} />

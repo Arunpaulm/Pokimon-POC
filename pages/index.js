@@ -1,15 +1,15 @@
 import MyNavbar from '../components/Navbar';
 import DisplayPoki from '../components/DisplayPoki';
-import { Container, Row, Col, Card, Button } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 
 export default function Index() {
   return (
     <>
       <MyNavbar />
       <Container key="maincontainer">
-        <div style={{ margin: 20 }}></div>
+        <div style={{ margin: 20 }} />
 
-        <DisplayPoki></DisplayPoki>
+        <DisplayPoki />
 
       </Container>
     </>
